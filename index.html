@@ -1,0 +1,76 @@
+<html>
+<head>
+  <title>DENON</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div style="margin:100px;">
+    <div class="jumbotron"  style="padding:10px;">
+      <h1>Denon remote</h1>
+      <p class="content">
+		<a id="alarmon" class="btn btn-primary btn-lg" href="#" role="button">Turn alarm ON</a>
+		<a id="alarmoff"  class="btn btn-primary btn-lg" href="#" role="button">Turn alarm OFF</a>
+		<a id="alarmstate"  class="btn btn-primary btn-lg" href="#" role="button">Refresh State</a>
+		<a id="poweron"  class="btn btn-primary btn-lg" href="#" role="button">Power ON</a>
+		<a id="poweroff"  class="btn btn-primary btn-lg" href="#" role="button">Power OFF</a>
+		<a id="radio2"  class="btn btn-primary btn-lg" href="#" role="button">Raadio2</a>
+		<a id="radiomania"  class="btn btn-primary btn-lg" href="#" role="button">Raadio Mania</a>
+	  </p>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.getJSON( "http://localhost:3000/api/alarm", function( data ) {
+	  var items = [];
+	  $.each( data, function( key, val ) {
+		items.push( "<li>" + key + ":" + val + "</li>" );
+	  });
+	  $( "<ul/>", {
+		"class": "my-new-list",
+		html: items.join( "" )
+	  }).appendTo( ".jumbotron" );
+	});
+	
+	$('#alarmon').click(function(){
+		$.getJSON( "http://localhost:3000/api/alarm/on", function( data ) {});
+    });
+   
+	$('#alarmoff').click(function(){
+		$.getJSON( "http://localhost:3000/api/alarm/off", function( data ) {});
+    });
+	
+	$('#poweron').click(function(){
+		$.getJSON( "http://localhost:3000/api/power/on", function( data ) {});
+    });
+	
+	$('#poweroff').click(function(){
+		$.getJSON( "http://localhost:3000/api/power/off", function( data ) {});
+    });	
+	
+	$('#radio2').click(function(){
+		$.getJSON( "http://localhost:3000/api/favourite/1", function( data ) {});
+    });	
+	
+	$('#radiomania').click(function(){
+		$.getJSON( "http://localhost:3000/api/favourite/3", function( data ) {});
+    });	
+	
+   	$('#alarmstate').click(function(){
+		$.getJSON( "http://localhost:3000/api/alarm", function( data ) {
+			  var items = [];
+			  $.each( data, function( key, val ) {
+				items.push( "<li>" + key + ":" + val + "</li>" );
+			  });
+			  $( "<ul/>", {
+				"class": "my-new-list",
+				html: items.join( "" )
+			  }).appendTo( ".jumbotron" );
+			});
+    });
+});
+</script>
+</html>

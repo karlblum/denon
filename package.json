@@ -1,0 +1,27 @@
+{
+  "name": "denon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "denon": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karlblum/denon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/karlblum/denon/issues"
+  },
+  "homepage": "https://github.com/karlblum/denon#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "express": "^4.14.0",
+    "vorpal": "^1.11.4"
+  }
+}
