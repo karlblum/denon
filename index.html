@@ -24,7 +24,7 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function(){
-	$.getJSON( "http://localhost:3000/api/alarm", function( data ) {
+	$.getJSON( "/api/alarm", function( data ) {
 	  var items = [];
 	  $.each( data, function( key, val ) {
 		items.push( "<li>" + key + ":" + val + "</li>" );
@@ -36,31 +36,31 @@ $(document).ready(function(){
 	});
 	
 	$('#alarmon').click(function(){
-		$.getJSON( "http://localhost:3000/api/alarm/on", function( data ) {});
+		$.getJSON( "/api/alarm/on", function( data ) {});
     });
    
 	$('#alarmoff').click(function(){
-		$.getJSON( "http://localhost:3000/api/alarm/off", function( data ) {});
+		$.getJSON( "/api/alarm/off", function( data ) {});
     });
 	
 	$('#poweron').click(function(){
-		$.getJSON( "http://localhost:3000/api/power/on", function( data ) {});
+		$.getJSON( "/api/power/on", function( data ) {});
     });
 	
 	$('#poweroff').click(function(){
-		$.getJSON( "http://localhost:3000/api/power/off", function( data ) {});
+		$.getJSON( "/api/power/off", function( data ) {});
     });	
 	
 	$('#radio2').click(function(){
-		$.getJSON( "http://localhost:3000/api/favourite/1", function( data ) {});
+		$.getJSON( "/api/favourite/1", function( data ) {});
     });	
 	
 	$('#radiomania').click(function(){
-		$.getJSON( "http://localhost:3000/api/favourite/3", function( data ) {});
+		$.getJSON( "/api/favourite/3", function( data ) {});
     });	
 	
    	$('#alarmstate').click(function(){
-		$.getJSON( "http://localhost:3000/api/alarm", function( data ) {
+		$.getJSON( "/api/alarm", function( data ) {
 			  var items = [];
 			  $.each( data, function( key, val ) {
 				items.push( "<li>" + key + ":" + val + "</li>" );
