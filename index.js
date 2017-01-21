@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+"use strict";
 
 const colors = require('colors');
 const Vorpal = require('vorpal');
