@@ -80,12 +80,12 @@ denon.on('connect', ()=> {
 });
 
 denon.on('error', err => {
-  console.error(colors.red('Something went wrong'), err);
+  console.error('Something went wrong', err);
   denon.end();
 });
 
 denon.on('close', ()=> {
-  console.log(colors.red('Connection closed'));
+  console.log('Connection closed');
 });
 
 denon.on('data', buffer => {
@@ -93,5 +93,5 @@ denon.on('data', buffer => {
 	response = buffer.toString().trim();
 	responseListenerActive = false;
   }
-  console.log(colors.magenta(buffer.toString().trim()));
+  console.log(buffer.toString().trim());
 });
