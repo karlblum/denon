@@ -1,21 +1,17 @@
 #! /usr/bin/env node
 "use strict";
 
-const colors = require('colors');
-const Vorpal = require('vorpal');
 var express = require('express');
 var path = require("path");
-
-var responseListenerActive = false;
+var config = require('./config');
+const DenonClient = require('./lib/DenonClient');
 
 var app = express();
-const DenonClient = require('./lib/DenonClient');
-const setupToolCommands = require('./lib/toolCommands');
-const setupDenonCommands = require('./lib/denonCommands');
-
 const denon = new DenonClient();
-const cli = Vorpal();
 
+denon.connect(config.host);
+
+var responseListenerActive = false;
 var response = "";
 
 function getResponse(cmd) {
@@ -73,7 +69,6 @@ app.get('/api/power', function (req, res) {
   setTimeout(function() {res.json({power:response});},300);
 });
 
-
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 });
@@ -81,16 +76,16 @@ app.listen(3000, function () {
 denon.on('connect', ()=> {
   const address = denon.socket.remoteAddress;
   const port = denon.socket.remotePort;
-  cli.log(colors.green(`Successfully connected to ${address}:${port}`));
+  console.log('Successfully connected to %s:%d',address,port);
 });
 
 denon.on('error', err => {
-  cli.log(colors.red('Something went wrong'), err);
+  console.error(colors.red('Something went wrong'), err);
   denon.end();
 });
 
 denon.on('close', ()=> {
-  cli.log(colors.red('Connection closed'));
+  console.log(colors.red('Connection closed'));
 });
 
 denon.on('data', buffer => {
@@ -98,16 +93,5 @@ denon.on('data', buffer => {
 	response = buffer.toString().trim();
 	responseListenerActive = false;
   }
-  cli.log(colors.magenta(buffer.toString().trim()));
+  console.log(colors.magenta(buffer.toString().trim()));
 });
-
-cli
-  .localStorage('denon-remote-v1')
-  .history('denon-remote-v1')
-  .delimiter('denon$')
-  .show();
-
-setupToolCommands(cli, denon);
-setupDenonCommands(cli, denon);
-
-cli.execSync('connect');
