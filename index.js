@@ -21,6 +21,7 @@ function getResponse(cmd) {
 	responseListenerActive = true;
 	denon.command(cmd);	
 }
+//http://first-time-ceo.tumblr.com/post/104273001643/using-promises-with-expressjs
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname+'/index.html'));
