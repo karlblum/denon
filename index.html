@@ -18,7 +18,9 @@
       <p class="content">
 		<a id="alarmon" class="btn btn-primary btn-lg" href="#" role="button">Turn alarm ON</a>
 		<a id="alarmoff"  class="btn btn-primary btn-lg" href="#" role="button">Turn alarm OFF</a>
-	</p>
+		
+	  </p>
+	  <p id="alarmstate">???</p>
 	<h2>Jaamad</h2>
 	<p>
 		<a id="radio2"  class="btn btn-primary btn-lg" href="#" role="button">Raadio2</a>
@@ -29,23 +31,20 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function(){
-	$.getJSON( "/api/alarm", function( data ) {
-	  var items = [];
-	  $.each( data, function( key, val ) {
-		items.push( "<li>" + key + ":" + val + "</li>" );
-	  });
-	  $( "<ul/>", {
-		"class": "my-new-list",
-		html: items.join( "" )
-	  }).appendTo( ".jumbotron" );
-	});
+		$.getJSON( "/api/alarm", function( data ) { 
+			$("#alarmstate").text(JSON.stringify(data));
+		});
 	
 	$('#alarmon').click(function(){
-		$.getJSON( "/api/alarm/on", function( data ) {});
+		$.getJSON( "/api/alarm/on", function( data ) { 
+			$("#alarmstate").text(JSON.stringify(data));
+		});
     });
    
 	$('#alarmoff').click(function(){
-		$.getJSON( "/api/alarm/off", function( data ) {});
+		$.getJSON( "/api/alarm/off", function( data ) { 
+			$("#alarmstate").text(JSON.stringify(data));
+		});
     });
 	
 	$('#poweron').click(function(){
@@ -64,18 +63,6 @@ $(document).ready(function(){
 		$.getJSON( "/api/favourite/3", function( data ) {});
     });	
 	
-   	$('#alarmstate').click(function(){
-		$.getJSON( "/api/alarm", function( data ) {
-			  var items = [];
-			  $.each( data, function( key, val ) {
-				items.push( "<li>" + key + ":" + val + "</li>" );
-			  });
-			  $( "<ul/>", {
-				"class": "my-new-list",
-				html: items.join( "" )
-			  }).appendTo( ".jumbotron" );
-			});
-    });
 });
 </script>
 </html>

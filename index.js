@@ -1,97 +1,117 @@
 #! /usr/bin/env node
 "use strict";
 
+var telnet = require('telnet-client');
 var express = require('express');
 var path = require("path");
 var config = require('./config');
-const DenonClient = require('./lib/DenonClient');
 
 var app = express();
-const denon = new DenonClient();
 
-denon.connect(config.host);
 
-var responseListenerActive = false;
-var response = "";
+var params = {
+  host: config.host,
+  port: config.port,
+  shellPrompt: '',
+  timeout: config.timeout,
+  irs: '\r',
+  ors: '\r',
+  echoLines: 0
+};
 
-function getResponse(cmd) {
-	responseListenerActive = true;
-	denon.command(cmd);	
-}
-//http://first-time-ceo.tumblr.com/post/104273001643/using-promises-with-expressjs
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname+'/index.html'));
 });
 
 app.get('/api/volume', function (req, res) {
-  getResponse('MV?');
-  setTimeout(function() {res.json({volume: response});}, 300);
+	execute('MV?', function(response){
+		res.json({volume:response});
+	})
 });
 
 app.get('/api/alarm/on', function (req, res) {
-  getResponse('TSEVERY 20740-20840 FA01 12 1');
-  setTimeout(function() {res.json({alarm: response});}, 300);
+	execute('TSEVERY 20740-20840 FA01 12 1', function(response){
+		res.json({alarm:response});
+	})
 });
 
 app.get('/api/alarm/off', function (req, res) {
-  getResponse('TSEVERY 20740-20840 FA01 12 0');
-  setTimeout(function() {res.json({alarm: response});}, 300);
+	execute('TSEVERY 20740-20840 FA01 12 0', function(response){
+		res.json({alarm:response});
+	})
 });
 
 app.get('/api/alarm', function (req, res) {
-  getResponse('TO?');
-  setTimeout(function() {res.json({alarm: response});}, 300);
+	execute("TO?", function(response){
+		res.json({alarm:response});
+	})
 });
 
 app.get('/api/power/on', function (req, res) {
-  denon.command('PWON');
-  res.json({power:'on'});
+	execute("PWON", function(response){
+		res.json({power:response});
+	})
 });
 
 app.get('/api/power/off', function (req, res) {
-  denon.command('PWSTANDBY');
-  res.json({power:'off'});
+	execute("PWSTANDBY", function(response){
+		res.json({power:response});
+	})
 });
 
 app.get('/api/favourite/1', function (req, res) {
-  denon.command('FV 01');
-  res.json({favourite:'1'});
+	execute("FV 01", function(response){
+		res.json({favourite:response});
+	})
 });
 
 app.get('/api/favourite/3', function (req, res) {
-  denon.command('FV 03');
-  res.json({favourite:'3'});
+  	execute("FV 03", function(response){
+		res.json({favourite:response});
+	})
 });
 
 app.get('/api/power', function (req, res) {
-  getResponse('PW?');
-  setTimeout(function() {res.json({power:response});},300);
+	execute("PW?", function(response){
+		res.json({power:response});
+	})
 });
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 });
 
-denon.on('connect', ()=> {
-  const address = denon.socket.remoteAddress;
-  const port = denon.socket.remotePort;
-  console.log('Successfully connected to %s:%d',address,port);
-});
 
-denon.on('error', err => {
-  console.error('Something went wrong', err);
-  denon.end();
-});
 
-denon.on('close', ()=> {
-  console.log('Connection closed');
-});
+var execute = function(cmd, callback) {
 
-denon.on('data', buffer => {
-  if(responseListenerActive) {
-	response = buffer.toString().trim();
-	responseListenerActive = false;
-  }
-  console.log(buffer.toString().trim());
-});
+	var connection = new telnet();
+
+	connection.on('connect', function() {
+		console.log('Connected');
+		connection.exec(cmd, function(err, response) {
+			console.log("response: " + response);
+			callback(response);
+		});
+	});
+	
+	connection.on('timeout', function() {
+	  console.log('Socket timeout, closing connection.')
+	  connection.end();
+	});
+	 
+	connection.on('close', function() {
+	  console.log('Connection closed.');
+	});
+	
+	connection.on('error', function() {
+	  console.log('Something bad happened');
+	});
+	
+	connection.connect(params);	
+}
+
+
+
+
