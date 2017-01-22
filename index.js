@@ -1,10 +1,11 @@
 #! /usr/bin/env node
-"use strict";
 
+require('use-strict');
 var telnet = require('telnet-client');
 var express = require('express');
 var path = require("path");
 var config = require('./config');
+
 
 var app = express();
 
