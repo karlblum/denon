@@ -73,6 +73,12 @@ app.get('/api/favourite/3', function (req, res) {
 	})
 });
 
+app.get('/api/favourite/list', function (req, res) {
+  	execute("FV ?", function(response){
+		res.json({favourites:response});
+	})
+});
+
 app.get('/api/power', function (req, res) {
 	execute("PW?", function(response){
 		res.json({power:response});
@@ -96,23 +102,19 @@ var execute = function(cmd, callback) {
 			callback(response);
 		});
 	});
-	
+
 	connection.on('timeout', function() {
 	  console.log('Socket timeout, closing connection.')
 	  connection.end();
 	});
-	 
+
 	connection.on('close', function() {
 	  console.log('Connection closed.');
 	});
-	
+
 	connection.on('error', function() {
 	  console.log('Something bad happened');
 	});
-	
-	connection.connect(params);	
+
+	connection.connect(params);
 }
-
-
-
-
