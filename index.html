@@ -25,16 +25,19 @@
             <button id="poweron" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Power ON</button>
             <button id="poweroff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Power OFF</button>
           </p>
-          <h3>Alarm</h3>
+          <h3 id="alarmstate">Alarm</h3>
           <p>
             <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
             <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
+            <button id="refreshState" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Refresh state</button>
           </p>
-          <p id="alarmstate">???</p>
           <h3>Jaamad</h3>
           <p>
-            <button id="radio2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio 2</button>
-            <button id="radiomania" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio Mania</button>
+            <button id="f1" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio 2</button><br>
+            <button id="f2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Kuku</button><br>
+            <button id="f3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Mania</button><br>
+            <button id="f4" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sky+</button><br>
+            <button id="f5" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Adore Jazz</button>
           </p>
         </div>
       </div>
@@ -45,20 +48,20 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
-  		$.getJSON( "/api/alarm", function( data ) {
-  			$("#alarmstate").text(JSON.stringify(data));
-  		});
+    refreshState();
+
+    $('#refreshState').click(function(){
+        refreshState();
+    });
 
   	$('#alarmon').click(function(){
   		$.getJSON( "/api/alarm/on", function( data ) {
-  			$("#alarmstate").text(JSON.stringify(data));
-  		});
+      });
     });
 
   	$('#alarmoff').click(function(){
   		$.getJSON( "/api/alarm/off", function( data ) {
-  			$("#alarmstate").text(JSON.stringify(data));
-  		});
+      });
     });
 
   	$('#poweron').click(function(){
@@ -69,14 +72,36 @@
   		$.getJSON( "/api/power/off", function( data ) {});
     });
 
-  	$('#radio2').click(function(){
+  	$('#f1').click(function(){
   		$.getJSON( "/api/favourite/1", function( data ) {});
     });
 
-  	$('#radiomania').click(function(){
-  		$.getJSON( "/api/favourite/3", function( data ) {});
+    $('#f2').click(function(){
+      $.getJSON( "/api/favourite/2", function( data ) {});
+    });
+
+    $('#f3').click(function(){
+      $.getJSON( "/api/favourite/3", function( data ) {});
+    });
+
+    $('#f4').click(function(){
+      $.getJSON( "/api/favourite/4", function( data ) {});
+    });
+
+    $('#f5').click(function(){
+      $.getJSON( "/api/favourite/5", function( data ) {});
     });
   });
+
+function refreshState() {
+  $.getJSON( "/api/alarm", function( data ) {
+    if (data.alarm.daily){
+         $("#alarmstate").text("Alarm ON");
+       } else {
+         $("#alarmstate").text("Alarm OFF");
+       }
+     });
+}
 </script>
 
 </html>

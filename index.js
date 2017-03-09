@@ -45,7 +45,12 @@ app.get('/api/alarm/off', function (req, res) {
 
 app.get('/api/alarm', function (req, res) {
 	execute("TO?", function(response){
-		res.json({alarm:response});
+    if(response) {
+      alarmState = parseAlarmResponse(response);
+    } else {
+      alarmState = "unknown"
+    }
+    res.json({alarm:alarmState});
 	})
 });
 
@@ -61,14 +66,8 @@ app.get('/api/power/off', function (req, res) {
 	})
 });
 
-app.get('/api/favourite/1', function (req, res) {
-	execute("FV 01", function(response){
-		res.json({favourite:response});
-	})
-});
-
-app.get('/api/favourite/3', function (req, res) {
-  	execute("FV 03", function(response){
+app.get('/api/favourite/:nr', function (req, res) {
+	execute("FV 0"+req.params.nr, function(response){
 		res.json({favourite:response});
 	})
 });
@@ -85,19 +84,19 @@ app.get('/api/power', function (req, res) {
 	})
 });
 
-app.listen(3000, function () {
+app.listen(3001, function () {
   console.log('Example app listening on port 3000!')
 });
 
 
 
 var execute = function(cmd, callback) {
-
 	var connection = new telnet();
 
 	connection.on('connect', function() {
 		console.log('Connected');
 		connection.exec(cmd, function(err, response) {
+      connection.end();
 			console.log("response: " + response);
 			callback(response);
 		});
@@ -117,4 +116,10 @@ var execute = function(cmd, callback) {
 	});
 
 	connection.connect(params);
+}
+
+function parseAlarmResponse(response) {
+  //Example response: "TOON OFF"
+  return {"daily": (response.match("TOON") ? true : false),
+          "once": (response.match("ON$") ? true : false)};
 }
