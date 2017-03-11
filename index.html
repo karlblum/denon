@@ -21,6 +21,10 @@
       <div class="content-grid mdl-grid">
         <div class="mdl-cell mdl-cell--4-col">
           <h3>Power</h3>
+          <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="pwtoggle">
+            <input type="checkbox" id="pwtoggle" class="mdl-switch__input" checked>
+            <span class="mdl-switch__label"></span>
+          </label>
           <p>
             <button id="poweron" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Power ON</button>
             <button id="poweroff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Power OFF</button>
@@ -29,16 +33,29 @@
           <p>
             <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
             <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
-            <button id="refreshState" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Refresh state</button>
+          </p>
+          <h3>Volume</h3>
+          <p style="width:300px">
+            <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0", step="1" tabindex="0">
           </p>
           <h3>Jaamad</h3>
-          <p>
-            <button id="f1" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio 2</button><br>
-            <button id="f2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Kuku</button><br>
-            <button id="f3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Mania</button><br>
-            <button id="f4" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sky+</button><br>
-            <button id="f5" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Adore Jazz</button>
-          </p>
+          <ul class="mdl-list">
+            <li class="mdl-list__item">
+                <button id="f1" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio 2</button>
+            </li>
+            <li class="mdl-list__item">
+              <button id="f2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Kuku</button>
+            </li>
+            <li class="mdl-list__item">
+              <button id="f3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Mania</button>
+            </li>
+            <li class="mdl-list__item">
+              <button id="f4" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sky+</button>
+            </li>
+            <li class="mdl-list__item">
+              <button id="f5" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Adore Jazz</button>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -50,17 +67,21 @@
   $(document).ready(function(){
     refreshState();
 
-    $('#refreshState').click(function(){
-        refreshState();
+    $("#volume").change(function() {
+      console.log("volume change")
+      $.getJSON( "/api/volume"+$("volume").val(), function( data ) {
+      });
     });
 
   	$('#alarmon').click(function(){
   		$.getJSON( "/api/alarm/on", function( data ) {
+        refreshState()
       });
     });
 
   	$('#alarmoff').click(function(){
   		$.getJSON( "/api/alarm/off", function( data ) {
+        refreshState()
       });
     });
 
@@ -97,10 +118,14 @@ function refreshState() {
   $.getJSON( "/api/alarm", function( data ) {
     if (data.alarm.daily){
          $("#alarmstate").text("Alarm ON");
-       } else {
+    } else {
          $("#alarmstate").text("Alarm OFF");
-       }
-     });
+    }
+    $.getJSON("/api/volume", function ( data ){
+        //slider1.MaterialSlider.change(newvalue)
+          $("#volume").val(data.volume);
+    })
+  });
 }
 </script>
 

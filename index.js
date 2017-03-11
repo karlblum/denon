@@ -10,6 +10,8 @@ var config = require('./config');
 var app = express();
 
 
+
+
 var params = {
   host: config.host,
   port: config.port,
@@ -17,7 +19,8 @@ var params = {
   timeout: config.timeout,
   irs: '\r',
   ors: '\r',
-  echoLines: 0
+  echoLines: 0,
+  negotiationMandatory: false
 };
 
 
@@ -27,6 +30,12 @@ app.get('/', function (req, res) {
 
 app.get('/api/volume', function (req, res) {
 	execute('MV?', function(response){
+		res.json({volume:response});
+	})
+});
+
+app.get('/api/volume/:level', function (req, res) {
+	execute('MV 0'+req.params.nr, function(response){
 		res.json({volume:response});
 	})
 });
@@ -84,38 +93,42 @@ app.get('/api/power', function (req, res) {
 	})
 });
 
-app.listen(3001, function () {
+app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 });
 
 
 
 var execute = function(cmd, callback) {
-	var connection = new telnet();
+    var connection = new telnet();
+    console.log('TELNET - New client created');
 
-	connection.on('connect', function() {
-		console.log('Connected');
-		connection.exec(cmd, function(err, response) {
-      connection.end();
-			console.log("response: " + response);
-			callback(response);
-		});
-	});
+  	connection.on('connect', function() {
+  		console.log('TELNET - Connected');
 
-	connection.on('timeout', function() {
-	  console.log('Socket timeout, closing connection.')
-	  connection.end();
-	});
+  		connection.exec(cmd, function(err, response) {
+        console.log("TELNET - Executing: "+ cmd);
+        connection.end();
+  			console.log("TELNET - Response: " + response);
+  			callback(response);
+  		});
+  	});
 
-	connection.on('close', function() {
-	  console.log('Connection closed.');
-	});
+  	connection.on('timeout', function() {
+  	  console.log('TELNET - Socket timeout, closing connection.')
+  	  connection.end();
+  	});
 
-	connection.on('error', function() {
-	  console.log('Something bad happened');
-	});
+  	connection.on('close', function() {
+  	  console.log('TELNET - Connection closed.');
+  	});
 
-	connection.connect(params);
+  	connection.on('error', function(err) {
+  	  console.log('TELNET - Something bad happened');
+      console.log(err);
+  	});
+
+  	connection.connect(params);
 }
 
 function parseAlarmResponse(response) {
