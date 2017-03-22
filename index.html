@@ -20,15 +20,12 @@
     <div class="page-content">
       <div class="content-grid mdl-grid">
         <div class="mdl-cell mdl-cell--4-col">
-          <h3>Power</h3>
-          <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="pwtoggle">
-            <input type="checkbox" id="pwtoggle" class="mdl-switch__input" checked>
-            <span class="mdl-switch__label"></span>
-          </label>
-          <p>
-            <button id="poweron" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Power ON</button>
-            <button id="poweroff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Power OFF</button>
-          </p>
+
+        <label id="pwrlabel" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="powertoggle">
+          <input type="checkbox" id="powertoggle" class="mdl-switch__input" checked>
+          <span class="mdl-switch__label">Power</span>
+        </label>
+
           <h3 id="alarmstate">Alarm</h3>
           <p>
             <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
@@ -67,9 +64,9 @@
   $(document).ready(function(){
     refreshState();
 
-    $("#volume").change(function() {
-      console.log("volume change")
-      $.getJSON( "/api/volume"+$("volume").val(), function( data ) {
+    $("#volume").on('input',function() {
+      v = $("#volume").val();
+      $.getJSON( "/api/volume/"+v, function( data ) {
       });
     });
 
@@ -85,13 +82,13 @@
       });
     });
 
-  	$('#poweron').click(function(){
-  		$.getJSON( "/api/power/on", function( data ) {});
-    });
+    $('#powertoggle').change(function(){
+      if($(this).is(':checked'))
+          $.getJSON( "/api/power/on", function( data ) {});
+        else
+          $.getJSON( "/api/power/off", function( data ) {});
+      });
 
-  	$('#poweroff').click(function(){
-  		$.getJSON( "/api/power/off", function( data ) {});
-    });
 
   	$('#f1').click(function(){
   		$.getJSON( "/api/favourite/1", function( data ) {});
@@ -115,16 +112,24 @@
   });
 
 function refreshState() {
-  $.getJSON( "/api/alarm", function( data ) {
-    if (data.alarm.daily){
-         $("#alarmstate").text("Alarm ON");
+  $.getJSON( "/api/power", function( data ) {
+    if (data.power == undefined || !data.power.match("PWON")){
+      console.log("power off - disable ui");
+      $("#pwrlabel")[0].MaterialSwitch.off();
     } else {
-         $("#alarmstate").text("Alarm OFF");
+      $.getJSON( "/api/alarm", function( data ) {
+        if (data.alarm.daily){
+             $("#alarmstate").text("Alarm ON");
+        } else {
+             $("#alarmstate").text("Alarm OFF");
+        }
+        $.getJSON("/api/volume", function ( data ){
+            //slider1.MaterialSlider.change(newvalue)
+            console.log("Volume refreshed to: "+ data.volume)
+              $("#volume").get(0).MaterialSlider.change(data.volume);
+        })
+      });
     }
-    $.getJSON("/api/volume", function ( data ){
-        //slider1.MaterialSlider.change(newvalue)
-          $("#volume").val(data.volume);
-    })
   });
 }
 </script>

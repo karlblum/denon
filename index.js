@@ -30,14 +30,25 @@ app.get('/', function (req, res) {
 
 app.get('/api/volume', function (req, res) {
 	execute('MV?', function(response){
-		res.json({volume:response});
+    vol = response.substring(2,4);
+		res.json({volume:vol});
 	})
 });
 
 app.get('/api/volume/:level', function (req, res) {
-	execute('MV 0'+req.params.nr, function(response){
-		res.json({volume:response});
-	})
+  vol = req.params.level;
+  vol_str = "";
+  if(vol > -1 & vol < 25){
+    if (vol < 10) {
+      vol_str = "MV0"+vol;
+    } else {
+      vol_str = "MV"+vol;
+    }
+    console.log(vol_str);
+    execute(vol_str, function(response){
+  		res.json({volume:response});
+  	})
+  }
 });
 
 app.get('/api/alarm/on', function (req, res) {
