@@ -25,12 +25,17 @@
           <input type="checkbox" id="powertoggle" class="mdl-switch__input" checked>
           <span class="mdl-switch__label">Power</span>
         </label>
-
+        <h1></h1>
+        <p>
+          <button id="inputtuner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio</button>
+          <button id="inputaux" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Chromecast</button>
+        </p>
           <h3 id="alarmstate">Alarm</h3>
           <p>
             <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
             <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
           </p>
+
           <h3>Volume</h3>
           <p style="width:300px">
             <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0", step="1" tabindex="0">
@@ -108,6 +113,14 @@
 
     $('#f5').click(function(){
       $.getJSON( "/api/favourite/5", function( data ) {});
+    });
+
+    $('#inputtuner').click(function(){
+      $.getJSON( "/api/input/tuner", function( data ) {});
+    });
+
+    $('#inputaux').click(function(){
+      $.getJSON( "/api/input/aux", function( data ) {});
     });
   });
 

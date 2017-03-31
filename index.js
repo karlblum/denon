@@ -104,6 +104,18 @@ app.get('/api/power', function (req, res) {
 	})
 });
 
+app.get('/api/input/tuner', function (req, res) {
+	execute("SIIRADIO", function(response){
+		res.json({power:response});
+	})
+});
+
+app.get('/api/input/aux', function (req, res) {
+	execute("SIAUXB", function(response){
+		res.json({power:response});
+	})
+});
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 });
