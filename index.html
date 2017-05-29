@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2F3BA2">
@@ -10,138 +11,138 @@
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <style></style>
 </head>
+
 <body>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row"><h4>Denon remote</h4>
-    </div>
-  </header>
-  <main class="mdl-layout__content">
-    <div class="page-content">
-      <div class="content-grid mdl-grid">
-        <div class="mdl-cell mdl-cell--4-col">
+      <div class="mdl-layout__header-row">
+        <h4>Denon remote</h4>
+      </div>
+    </header>
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <div class="content-grid mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
 
-        <label id="pwrlabel" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="powertoggle">
+            <label id="pwrlabel" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="powertoggle">
           <input type="checkbox" id="powertoggle" class="mdl-switch__input" checked>
           <span class="mdl-switch__label">Power</span>
         </label>
-        <h1></h1>
-        <p>
-          <button id="inputtuner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio</button>
-          <button id="inputaux" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Chromecast</button>
-        </p>
-          <h3 id="alarmstate">Alarm</h3>
-          <p>
-            <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
-            <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
-          </p>
+            <h1></h1>
+            <p>
+              <button id="inputtuner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio</button>
+              <button id="inputaux" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Chromecast</button>
+            </p>
+            <h3 id="alarmstate">Alarm</h3>
+            <p>
+              <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
+              <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
+            </p>
 
-          <h3>Volume</h3>
-          <p style="width:300px">
-            <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0", step="1" tabindex="0">
-          </p>
-          <h3>Jaamad</h3>
-          <ul class="mdl-list">
-            <li class="mdl-list__item">
+            <h3>Volume</h3>
+            <p style="width:300px">
+              <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0" , step="1" tabindex="0">
+            </p>
+            <h3>Jaamad</h3>
+            <ul class="mdl-list">
+              <li class="mdl-list__item">
                 <button id="f1" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio 2</button>
-            </li>
-            <li class="mdl-list__item">
-              <button id="f2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Kuku</button>
-            </li>
-            <li class="mdl-list__item">
-              <button id="f3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Mania</button>
-            </li>
-            <li class="mdl-list__item">
-              <button id="f4" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sky+</button>
-            </li>
-            <li class="mdl-list__item">
-              <button id="f5" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Adore Jazz</button>
-            </li>
-          </ul>
+              </li>
+              <li class="mdl-list__item">
+                <button id="f2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Kuku</button>
+              </li>
+              <li class="mdl-list__item">
+                <button id="f3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Mania</button>
+              </li>
+              <li class="mdl-list__item">
+                <button id="f4" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sky+</button>
+              </li>
+              <li class="mdl-list__item">
+                <button id="f5" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Adore Jazz</button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
-</div>
+    </main>
+  </div>
 </body>
 <script type="text/javascript">
-
-  $(document).ready(function(){
+  $(document).ready(function() {
     refreshState();
 
-    $("#volume").on('input',function() {
+    $("#volume").on('input', function() {
       v = $("#volume").val();
-      $.getJSON( "/api/volume/"+v, function( data ) {
-      });
+      $.getJSON("/api/volume/" + v, function(data) {});
     });
 
-  	$('#alarmon').click(function(){
-  		$.getJSON( "/api/alarm/on", function( data ) {
+    $('#alarmon').click(function() {
+      $.getJSON("/api/alarm/on", function(data) {
         refreshState()
       });
     });
 
-  	$('#alarmoff').click(function(){
-  		$.getJSON( "/api/alarm/off", function( data ) {
+    $('#alarmoff').click(function() {
+      $.getJSON("/api/alarm/off", function(data) {
         refreshState()
       });
     });
 
-    $('#powertoggle').change(function(){
-      if($(this).is(':checked'))
-          $.getJSON( "/api/power/on", function( data ) {});
-        else
-          $.getJSON( "/api/power/off", function( data ) {});
-      });
-
-
-  	$('#f1').click(function(){
-  		$.getJSON( "/api/favourite/1", function( data ) {});
+    $('#powertoggle').change(function() {
+      if ($(this).is(':checked'))
+        $.getJSON("/api/power/on", function(data) {});
+      else
+        $.getJSON("/api/power/off", function(data) {});
     });
 
-    $('#f2').click(function(){
-      $.getJSON( "/api/favourite/2", function( data ) {});
+
+    $('#f1').click(function() {
+      $.getJSON("/api/favourite/1", function(data) {});
     });
 
-    $('#f3').click(function(){
-      $.getJSON( "/api/favourite/3", function( data ) {});
+    $('#f2').click(function() {
+      $.getJSON("/api/favourite/2", function(data) {});
     });
 
-    $('#f4').click(function(){
-      $.getJSON( "/api/favourite/4", function( data ) {});
+    $('#f3').click(function() {
+      $.getJSON("/api/favourite/3", function(data) {});
     });
 
-    $('#f5').click(function(){
-      $.getJSON( "/api/favourite/5", function( data ) {});
+    $('#f4').click(function() {
+      $.getJSON("/api/favourite/4", function(data) {});
     });
 
-    $('#inputtuner').click(function(){
-      $.getJSON( "/api/input/tuner", function( data ) {});
+    $('#f5').click(function() {
+      $.getJSON("/api/favourite/5", function(data) {});
     });
 
-    $('#inputaux').click(function(){
-      $.getJSON( "/api/input/aux", function( data ) {});
+    $('#inputtuner').click(function() {
+      $.getJSON("/api/input/tuner", function(data) {});
+    });
+
+    $('#inputaux').click(function() {
+      $.getJSON("/api/input/aux", function(data) {});
     });
   });
 
-function refreshState() {
-  $.getJSON( "/api/power", function( data ) {
-    if (data.power == undefined || !data.power.match("PWON")){
-      $("#pwrlabel")[0].MaterialSwitch.off();
-    } else {
-      $.getJSON( "/api/alarm", function( data ) {
-        if (data.alarm.daily){
-             $("#alarmstate").text("Alarm ON");
-        } else {
-             $("#alarmstate").text("Alarm OFF");
-        }
-      });
-      $.getJSON("/api/volume", function ( data ){
+  function refreshState() {
+    $.getJSON("/api/power", function(data) {
+      if (data.power == undefined || !data.power.match("PWON")) {
+        $("#pwrlabel")[0].MaterialSwitch.off();
+      } else {
+        $.getJSON("/api/alarm", function(data) {
+          if (data.alarm.daily) {
+            $("#alarmstate").text("Alarm ON");
+          } else {
+            $("#alarmstate").text("Alarm OFF");
+          }
+        });
+        $.getJSON("/api/volume", function(data) {
           $("#volume").get(0).MaterialSlider.change(data.volume);
-      });
-    }
-  });
-}
+        });
+      }
+    });
+  }
 </script>
 
 </html>
