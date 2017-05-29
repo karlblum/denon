@@ -1,22 +1,19 @@
 #! /usr/bin/env node
 
 require('use-strict');
+
 var telnet = require('telnet-client');
 var express = require('express');
 var path = require("path");
 var config = require('./config');
 
-
 var app = express();
 
-
-
-
 var params = {
-  host: config.host,
-  port: config.port,
+  host: config.telnet_host,
+  port: config.telnet_port,
   shellPrompt: '',
-  timeout: config.timeout,
+  timeout: config.telnet_timeout,
   irs: '\r',
   ors: '\r',
   echoLines: 0,
@@ -44,7 +41,6 @@ app.get('/api/volume/:level', function (req, res) {
     } else {
       vol_str = "MV"+vol;
     }
-    console.log(vol_str);
     execute(vol_str, function(response){
   		res.json({volume:response});
   	})
@@ -116,8 +112,8 @@ app.get('/api/input/aux', function (req, res) {
 	})
 });
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+app.listen(config.webserver_port, function () {
+  console.log('Denon remote app started!')
 });
 
 
