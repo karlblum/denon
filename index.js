@@ -150,6 +150,7 @@ var execute = function(cmd, callback) {
   	connection.on('error', function(err) {
   	  console.log('TELNET - Something bad happened');
       console.log(err);
+      connection.destroy();
   	});
 
 
