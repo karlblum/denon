@@ -21,6 +21,7 @@
   "homepage": "https://github.com/karlblum/denon#readme",
   "dependencies": {
     "express": "^4.14.0",
+    "express-queue": "0.0.5",
     "telnet-client": "^0.13.0",
     "use-strict": "^1.0.1"
   }

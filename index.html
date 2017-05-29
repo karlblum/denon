@@ -127,7 +127,6 @@
 function refreshState() {
   $.getJSON( "/api/power", function( data ) {
     if (data.power == undefined || !data.power.match("PWON")){
-      console.log("power off - disable ui");
       $("#pwrlabel")[0].MaterialSwitch.off();
     } else {
       $.getJSON( "/api/alarm", function( data ) {
@@ -136,11 +135,9 @@ function refreshState() {
         } else {
              $("#alarmstate").text("Alarm OFF");
         }
-        $.getJSON("/api/volume", function ( data ){
-            //slider1.MaterialSlider.change(newvalue)
-            console.log("Volume refreshed to: "+ data.volume)
-              $("#volume").get(0).MaterialSlider.change(data.volume);
-        })
+      });
+      $.getJSON("/api/volume", function ( data ){
+          $("#volume").get(0).MaterialSlider.change(data.volume);
       });
     }
   });

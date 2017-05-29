@@ -8,6 +8,8 @@ var path = require("path");
 var config = require('./config');
 
 var app = express();
+var queue = require('express-queue');
+app.use(queue({ activeLimit: 1 }));
 
 var params = {
   host: config.telnet_host,
@@ -27,8 +29,12 @@ app.get('/', function (req, res) {
 
 app.get('/api/volume', function (req, res) {
 	execute('MV?', function(response){
-    vol = response.substring(2,4);
-		res.json({volume:vol});
+    if (response != undefined) {
+      vol = response.substring(2,4);
+		  res.json({volume:vol});
+    } else {
+      res.json({volume:-1});
+    }
 	})
 });
 
@@ -116,8 +122,6 @@ app.listen(config.webserver_port, function () {
   console.log('Denon remote app started!')
 });
 
-
-
 var execute = function(cmd, callback) {
     var connection = new telnet();
     console.log('TELNET - New client created');
@@ -128,6 +132,7 @@ var execute = function(cmd, callback) {
   		connection.exec(cmd, function(err, response) {
         console.log("TELNET - Executing: "+ cmd);
         connection.end();
+        connection.destroy();
   			console.log("TELNET - Response: " + response);
   			callback(response);
   		});
@@ -146,6 +151,7 @@ var execute = function(cmd, callback) {
   	  console.log('TELNET - Something bad happened');
       console.log(err);
   	});
+
 
   	connection.connect(params);
 }
