@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="manifest" href="/manifest.json">
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <style></style>
 </head>
@@ -16,51 +17,63 @@
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
-        <h4>Denon remote</h4>
+        <span class="mdl-layout-title">Denon remote</span>
       </div>
     </header>
     <main class="mdl-layout__content">
       <div class="page-content">
         <div class="content-grid mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
-
             <label id="pwrlabel" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="powertoggle">
           <input type="checkbox" id="powertoggle" class="mdl-switch__input" checked>
           <span class="mdl-switch__label">Power</span>
         </label>
-            <h1></h1>
-            <p>
-              <button id="inputtuner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio</button>
-              <button id="inputaux" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Chromecast</button>
+            <h4>Input</h4>
+            <div class="mdl-grid">
+              <div>
+                <button id="inputtuner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio</button>
+              </div>
+              <div>
+                <button id="inputaux" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Chromecast</button>
+              </div>
+            </div>
+            <h4>Volume</h4>
+            <p style="width:300px">
+              <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0" , step="1" tabindex="0">
             </p>
-            <h3 id="alarmstate">Alarm</h3>
+            <h4>Jaamad</h4>
+            <ul class="mdl-list">
+              <li id="f1" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                  <i class="material-icons mdl-list__item-icon">radio</i>Raadio 2
+                </span>
+              </li>
+              <li id="f2" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                  <i class="material-icons mdl-list__item-icon">radio</i>Kuku
+              </span>
+              </li>
+              <li id="f3" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                  <i class="material-icons mdl-list__item-icon">radio</i>Mania
+                </span>
+              </li>
+              <li id="f4" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-icon">radio</i>Sky+
+                </span>
+              </li>
+              <li id="f5" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-icon">radio</i>Adore Jazz
+                </span>
+              </li>
+            </ul>
+            <h4 id="alarmstate">Alarm</h4>
             <p>
               <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
               <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
             </p>
-
-            <h3>Volume</h3>
-            <p style="width:300px">
-              <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0" , step="1" tabindex="0">
-            </p>
-            <h3>Jaamad</h3>
-            <ul class="mdl-list">
-              <li class="mdl-list__item">
-                <button id="f1" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio 2</button>
-              </li>
-              <li class="mdl-list__item">
-                <button id="f2" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Kuku</button>
-              </li>
-              <li class="mdl-list__item">
-                <button id="f3" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Mania</button>
-              </li>
-              <li class="mdl-list__item">
-                <button id="f4" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sky+</button>
-              </li>
-              <li class="mdl-list__item">
-                <button id="f5" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Adore Jazz</button>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

@@ -1,0 +1,28 @@
+{
+  "short_name": "Denon",
+  "name": "Denon Remote",
+  "icons": [
+    {
+      "src": "ic_launcher-1x.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "ic_launcher-2x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "ic_launcher-3x.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "ic_launcher-4x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "background_color": "#2196F3",
+  "display": "standalone"
+}
