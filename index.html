@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2F3BA2">
-  <title>DENON</title>
+  <title>DENON Remote</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -17,7 +17,7 @@
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">Denon remote</span>
+        <span class="mdl-layout-title">Denon Remote</span>
       </div>
     </header>
     <main class="mdl-layout__content">
@@ -28,20 +28,11 @@
           <input type="checkbox" id="powertoggle" class="mdl-switch__input" checked>
           <span class="mdl-switch__label">Power</span>
         </label>
-            <h4>Input</h4>
-            <div class="mdl-grid">
-              <div>
-                <button id="inputtuner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Raadio</button>
-              </div>
-              <div>
-                <button id="inputaux" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Chromecast</button>
-              </div>
-            </div>
-            <h4>Volume</h4>
+          <h4>Volume</h4>
             <p style="width:300px">
               <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0" , step="1" tabindex="0">
             </p>
-            <h4>Jaamad</h4>
+            <h4>Listen</h4>
             <ul class="mdl-list">
               <li id="f1" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
@@ -66,6 +57,11 @@
               <li id="f5" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                 <i class="material-icons mdl-list__item-icon">radio</i>Adore Jazz
+                </span>
+              </li>
+              <li id="inputaux" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-icon">cast</i>Chromecast
                 </span>
               </li>
             </ul>

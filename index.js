@@ -136,7 +136,7 @@ app.get('/api/input/tuner', function(req, res) {
 });
 
 app.get('/api/input/aux', function(req, res) {
-  execute("SIAUXB", function(response) {
+  execute("SIAUXD", function(response) {
     res.json({
       power: response
     });
