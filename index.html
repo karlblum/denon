@@ -10,56 +10,70 @@
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
   <link rel="manifest" href="/manifest.json">
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  <style></style>
-</head>
+
 
 <body>
+<style>
+.channel-list-item {
+width: 250px;
+}
+</style>
+</head>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
         <span class="mdl-layout-title">Denon Remote</span>
+        <div class="mdl-layout-spacer"></div>
+        <button id="powerbtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">-
+        </button>
       </div>
     </header>
     <main class="mdl-layout__content">
       <div class="page-content">
         <div class="content-grid mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
-            <label id="pwrlabel" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="powertoggle">
-          <input type="checkbox" id="powertoggle" class="mdl-switch__input" checked>
-          <span class="mdl-switch__label">Power</span>
-        </label>
           <h4>Volume</h4>
-            <p style="width:300px">
-              <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0" , step="1" tabindex="0">
+            <p style="width:400px">
+              <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="20" value="0" , step="1" tabindex="0">
             </p>
             <h4>Listen</h4>
-            <ul class="mdl-list">
-              <li id="f1" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+            <ul class="mdl-list channel-list-item">
+              <li id="f1" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                   <i class="material-icons mdl-list__item-icon">radio</i>Raadio 2
                 </span>
               </li>
-              <li id="f2" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+              <li id="f2" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                   <i class="material-icons mdl-list__item-icon">radio</i>Kuku
               </span>
               </li>
-              <li id="f3" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+              <li id="f3" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                   <i class="material-icons mdl-list__item-icon">radio</i>Mania
                 </span>
               </li>
-              <li id="f4" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+              <li id="f4" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                 <i class="material-icons mdl-list__item-icon">radio</i>Sky+
                 </span>
               </li>
-              <li id="f5" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+              <li id="f5" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                 <i class="material-icons mdl-list__item-icon">radio</i>Adore Jazz
                 </span>
               </li>
-              <li id="inputaux" class="mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+              <li id="f9" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-icon">radio</i>High Voltage
+                </span>
+              </li>
+              <li id="f8" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+                <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-icon">radio</i>Vikerraadio
+                </span>
+              </li>
+              <li id="inputaux" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
                 <span class="mdl-list__item-primary-content">
                 <i class="material-icons mdl-list__item-icon">cast</i>Chromecast
                 </span>
@@ -77,8 +91,14 @@
   </div>
 </body>
 <script type="text/javascript">
+
+  var powerOn = false;
+
   $(document).ready(function() {
     refreshState();
+    setInterval(function(){
+      refreshState();
+    }, 3000);
 
     $("#volume").on('input', function() {
       v = $("#volume").val();
@@ -97,11 +117,11 @@
       });
     });
 
-    $('#powertoggle').change(function() {
-      if ($(this).is(':checked'))
-        $.getJSON("/api/power/on", function(data) {});
-      else
+    $('#powerbtn').click(function() {
+      if (powerOn)
         $.getJSON("/api/power/off", function(data) {});
+      else
+        $.getJSON("/api/power/on", function(data) {});
     });
 
 
@@ -125,6 +145,14 @@
       $.getJSON("/api/favourite/5", function(data) {});
     });
 
+    $('#f8').click(function() {
+      $.getJSON("/api/favourite/8", function(data) {});
+    });
+
+    $('#f9').click(function() {
+      $.getJSON("/api/favourite/9", function(data) {});
+    });
+
     $('#inputtuner').click(function() {
       $.getJSON("/api/input/tuner", function(data) {});
     });
@@ -137,8 +165,13 @@
   function refreshState() {
     $.getJSON("/api/power", function(data) {
       if (data.power == undefined || !data.power.match("PWON")) {
-        $("#pwrlabel")[0].MaterialSwitch.off();
+        $("#powerbtn").html("Power ON");
+        powerOn = false;
+
       } else {
+        $("#powerbtn").html("Power OFF");
+        powerOn = true;
+
         $.getJSON("/api/alarm", function(data) {
           if (data.alarm.daily) {
             $("#alarmstate").text("Alarm ON");
