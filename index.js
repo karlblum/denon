@@ -137,8 +137,18 @@ app.get('/api/input/tuner', function(req, res) {
 
 app.get('/api/input/aux', function(req, res) {
   execute("SIAUXD", function(response) {
+    
+    console.log(response);
     res.json({
       power: response
+    });
+  })
+});
+
+app.get('/api/cmd/:cmd', function(req, res) {
+  execute(req.params.cmd, function(response) {
+    res.json({
+      text: response
     });
   })
 });
