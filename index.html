@@ -13,21 +13,24 @@
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
   <link rel="manifest" href="/manifest.json">
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <style>
+    .channel-list-item {
+      width: 250px;
+    }
 
+    .mdl-layout__header-row {
+      padding-left: 20px;
+    }
+  </style>
+</head>
 
 <body>
-<style>
-.channel-list-item {
-width: 250px;
-}
-</style>
-</head>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
         <span class="mdl-layout-title">Denon Remote</span>
         <div class="mdl-layout-spacer"></div>
-        <button id="powerbtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">-
+        <button id="powerbtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="power()">-
         </button>
       </div>
     </header>
@@ -35,58 +38,18 @@ width: 250px;
       <div class="page-content">
         <div class="content-grid mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
-          <h4>Volume</h4>
+            <h4>Volume</h4>
             <p style="width:400px">
               <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="20" value="0" , step="1" tabindex="0">
             </p>
             <h4>Listen</h4>
-            <ul class="mdl-list channel-list-item">
-              <li id="f1" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                  <i class="material-icons mdl-list__item-icon">radio</i>Raadio 2
-                </span>
-              </li>
-              <li id="f2" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                  <i class="material-icons mdl-list__item-icon">radio</i>Kuku
-              </span>
-              </li>
-              <li id="f3" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                  <i class="material-icons mdl-list__item-icon">radio</i>Mania
-                </span>
-              </li>
-              <li id="f4" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                <i class="material-icons mdl-list__item-icon">radio</i>Sky+
-                </span>
-              </li>
-              <li id="f5" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                <i class="material-icons mdl-list__item-icon">radio</i>Adore Jazz
-                </span>
-              </li>
-              <li id="f9" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                <i class="material-icons mdl-list__item-icon">radio</i>High Voltage
-                </span>
-              </li>
-              <li id="f8" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
-                <span class="mdl-list__item-primary-content">
-                <i class="material-icons mdl-list__item-icon">radio</i>Vikerraadio
-                </span>
-              </li>
-              <li id="inputaux" class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button">
+            <ul id="c-list" class="mdl-list channel-list-item">
+              <li class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button" onclick="aux()">
                 <span class="mdl-list__item-primary-content">
                 <i class="material-icons mdl-list__item-icon">cast</i>Chromecast
                 </span>
               </li>
             </ul>
-            <h4 id="alarmstate">Alarm</h4>
-            <p>
-              <button id="alarmon" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm ON</button>
-              <button id="alarmoff" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Turn alarm OFF</button>
-            </p>
           </div>
         </div>
       </div>
@@ -94,79 +57,56 @@ width: 250px;
   </div>
 </body>
 <script type="text/javascript">
-
   var powerOn = false;
+  var channels = [
+    { "name": "Raadio 2", "channel_nr": "1" },
+    { "name": "Kuku", "channel_nr": "2" },
+    { "name": "Mania", "channel_nr": "3" },
+    { "name": "Sky+", "channel_nr": "4" },
+    { "name": "Adore Jazz", "channel_nr": "5" },
+    { "name": "High Volgate", "channel_nr": "8" },
+    { "name": "Vikerraadio", "channel_nr": "9" }];
 
-  $(document).ready(function() {
+  $(document).ready(function () {
+
+    for (var i = 0; i < channels.length; i++) {
+      $("#c-list").append('\
+    <li class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button" onclick="channel(\''+ channels[i].channel_nr + '\')">\
+      <span class="mdl-list__item-primary-content">\
+        <i class="material-icons mdl-list__item-icon">radio</i>'+ channels[i].name + '\
+      </span>\
+    </li>');
+    }
+
     refreshState();
-    setInterval(function(){
+    setInterval(function () {
       refreshState();
     }, 3000);
 
-    $("#volume").on('input', function() {
+    $("#volume").on('input', function () {
       v = $("#volume").val();
-      $.getJSON("/api/volume/" + v, function(data) {});
+      $.getJSON("/api/volume/" + v, function (data) { });
     });
 
-    $('#alarmon').click(function() {
-      $.getJSON("/api/alarm/on", function(data) {
-        refreshState()
-      });
-    });
-
-    $('#alarmoff').click(function() {
-      $.getJSON("/api/alarm/off", function(data) {
-        refreshState()
-      });
-    });
-
-    $('#powerbtn').click(function() {
-      if (powerOn)
-        $.getJSON("/api/power/off", function(data) {});
-      else
-        $.getJSON("/api/power/on", function(data) {});
-    });
-
-
-    $('#f1').click(function() {
-      $.getJSON("/api/favourite/1", function(data) {});
-    });
-
-    $('#f2').click(function() {
-      $.getJSON("/api/favourite/2", function(data) {});
-    });
-
-    $('#f3').click(function() {
-      $.getJSON("/api/favourite/3", function(data) {});
-    });
-
-    $('#f4').click(function() {
-      $.getJSON("/api/favourite/4", function(data) {});
-    });
-
-    $('#f5').click(function() {
-      $.getJSON("/api/favourite/5", function(data) {});
-    });
-
-    $('#f8').click(function() {
-      $.getJSON("/api/favourite/8", function(data) {});
-    });
-
-    $('#f9').click(function() {
-      $.getJSON("/api/favourite/9", function(data) {});
-    });
-
-    $('#inputtuner').click(function() {
-      $.getJSON("/api/input/tuner", function(data) {});
-    });
-
-    $('#inputaux').click(function() {
-      $.getJSON("/api/input/aux", function(data) {});
-    });
   });
 
+  function aux() {
+    $.getJSON("/api/input/aux", function (data) { });
+  }
+
+  function power() {
+    if (powerOn)
+      $.getJSON("/api/power/off", function (data) { });
+    else
+      $.getJSON("/api/power/on", function (data) { });
+  }
+
+  function channel(i) {
+    $.getJSON("/api/favourite/" + i, function (data) { });
+  }
+
   function refreshState() {
-    $.getJSON("/api/power", function(data) {
+    $.getJSON("/api/power", function (data) {
       if (data.power == undefined || !data.power.match("PWON")) {
         $("#powerbtn").html("Power ON");
         powerOn = false;
@@ -175,19 +115,13 @@ width: 250px;
         $("#powerbtn").html("Power OFF");
         powerOn = true;
 
-        $.getJSON("/api/alarm", function(data) {
-          if (data.alarm.daily) {
-            $("#alarmstate").text("Alarm ON");
-          } else {
-            $("#alarmstate").text("Alarm OFF");
-          }
-        });
-        $.getJSON("/api/volume", function(data) {
+        $.getJSON("/api/volume", function (data) {
           $("#volume").get(0).MaterialSlider.change(data.volume);
         });
       }
     });
   }
+
 </script>
 
 </html>
