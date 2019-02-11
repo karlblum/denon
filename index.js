@@ -104,7 +104,14 @@ app.get('/api/power/off', function(req, res) {
 });
 
 app.get('/api/favourite/:nr', function(req, res) {
-  execute("FV 0" + req.params.nr, function(response) {
+  ch = req.params.nr;
+  ch_str = "";
+  if (ch < 10) {
+      ch_str = "FV 0" + ch;
+    } else {
+      ch_str = "FV " + ch;
+    }
+  execute(ch_str, function(response) {
     res.json({
       favourite: response
     });
