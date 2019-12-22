@@ -145,7 +145,6 @@ app.get('/api/input/tuner', function(req, res) {
 app.get('/api/input/aux', function(req, res) {
   execute("SIAUXD", function(response) {
     
-    console.log(response);
     res.json({
       power: response
     });
@@ -171,20 +170,20 @@ var execute = function(cmd, callback) {
 
   connection.on('connect', function() {
     connection.exec(cmd, function(err, response) {
-      console.log("TELNET - Executing: " + cmd);
-      console.log("TELNET - Response: " + response);
+      //console.log("TELNET - Executing: " + cmd);
+      //console.log("TELNET - Response: " + response);
       exec_response = response;
       connection.end();
     });
   });
 
   connection.on('timeout', function() {
-    console.log('TELNET - Socket timeout, closing connection.')
+    //console.log('TELNET - Socket timeout, closing connection.')
     connection.end();
   });
 
   connection.on('close', function() {
-    console.log('TELNET - Connection closed.');
+    //console.log('TELNET - Connection closed.');
     if (responseOK) {
       callback(exec_response);
     }
