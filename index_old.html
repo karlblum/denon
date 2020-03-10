@@ -1,0 +1,129 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2F3BA2">
+  <title>DENON Remote</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="manifest" href="/manifest.json">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <style>
+    .channel-list-item {
+      width: 250px;
+    }
+
+    .mdl-layout__header-row {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">Denon Remote</span>
+        <div class="mdl-layout-spacer"></div>
+        <button id="powerbtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="power()">-
+        </button>
+      </div>
+    </header>
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <div class="content-grid mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+            <h5 onclick="volume5()">Volume</h5>
+            <p style="width:400px">
+              <input id="volume" class="mdl-slider mdl-js-slider" type="range" min="0" max="15" value="0" , step="1" tabindex="0">
+            </p>
+            <h5>Listen</h5>
+            <ul id="c-list" class="mdl-list channel-list-item">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+<script type="text/javascript">
+  var powerOn = false;
+  var channels = [
+    { "name": "Rock FM", "channel_nr": "12" },
+    { "name": "Raadio 2", "channel_nr": "1" },
+    { "name": "Kuku", "channel_nr": "2" },
+    { "name": "Sky+", "channel_nr": "4" },
+    { "name": "Adore Jazz", "channel_nr": "5" },
+    { "name": "High Voltage", "channel_nr": "9" },
+    { "name": "977 Alternative", "channel_nr": "7" },
+    { "name": "BBC Radio 1", "channel_nr": "10"},
+    { "name": "BBC Radio 2", "channel_nr": "11"},
+	{ "name": "Vikerraadio", "channel_nr": "8" }];
+
+  $(document).ready(function () {
+
+    for (var i = 0; i < channels.length; i++) {
+      $("#c-list").append('\
+    <li class="channel-list-item mdl-list__item mdl-js-ripple-effect mdl-button mdl-js-button" onclick="channel(\''+ channels[i].channel_nr + '\')">\
+      <span class="mdl-list__item-primary-content">\
+        <i class="material-icons mdl-list__item-icon">radio</i>'+ channels[i].name + '\
+      </span>\
+    </li>');
+    }
+
+    refreshState();
+    setInterval(function () {
+      refreshState();
+    }, 2000);
+
+    $("#volume").on('input', function () {
+      v = $("#volume").val();
+      $.getJSON("/api/volume/" + v, function (data) { });
+    });
+
+  });
+
+  function  volume5() {
+    $.getJSON("/api/volume/5", function (data) { });
+  }
+
+  function aux() {
+    $.getJSON("/api/input/aux", function (data) { });
+  }
+
+  function power() {
+    if (powerOn)
+      $.getJSON("/api/power/off", function (data) { });
+    else
+      $.getJSON("/api/power/on", function (data) { });
+  }
+
+  function channel(i) {
+    $.getJSON("/api/favourite/" + i, function (data) { });
+  }
+
+  function refreshState() {
+    $.getJSON("/api/power", function (data) {
+      if (data.power == undefined || !data.power.match("PWON")) {
+        $("#powerbtn").html("Power ON");
+        powerOn = false;
+
+      } else {
+        $("#powerbtn").html("Power OFF");
+        powerOn = true;
+
+        $.getJSON("/api/volume", function (data) {
+          $("#volume").get(0).MaterialSlider.change(data.volume);
+        });
+      }
+    });
+  }
+
+</script>
+
+</html>
