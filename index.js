@@ -10,8 +10,6 @@ var moment = require('./moment');
 
 var app = express();
 
-var denonConnectionAvailable = true;
-
 var params = {
   host: config.telnet_host,
   port: config.telnet_port,
@@ -24,10 +22,6 @@ var params = {
 };
 
 app.use(express.static('public'));
-
-app.get('/old', function (req, res) {
-  res.sendFile(path.join(__dirname + '/index_old.html'));
-});
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
@@ -70,7 +64,7 @@ app.get('/api/power/on', function (req, res) {
       res.status(500).send(error)
     } else {
       res.json({
-        power: response
+        power: true
       });
     }
   })
@@ -82,7 +76,7 @@ app.get('/api/power/off', function (req, res) {
       res.status(500).send(error)
     } else {
       res.json({
-        power: response
+        power: false
       });
     }
   })
@@ -124,12 +118,8 @@ app.get('/api/power', function (req, res) {
     if (error != undefined & error != "") {
       res.status(500).send(error)
     } else {
-      powerOn = false
-      if (response === "PWON") {
-        powerOn = true;
-      }
       res.json({
-        power: powerOn
+        power: response.includes("PWON")
       });
     }
   })
@@ -165,21 +155,15 @@ app.listen(config.webserver_port, function () {
 });
 
 var execute = function (cmd, callback) {
-  while (!denonConnectionAvailable) {
-    //waiting for free connection
-  }
-  denonConnectionAvailable = false
-
   var connection = new telnet();
   var requestID = Date.now().toString().substr(7, 7)
   var exec_response = ""
   var exec_error = ""
   var responseOK = true
   //TODO add error log levels (debug/live)
+  
   connection.on('connect', function () {
     connection.exec(cmd, function (err, response) {
-
-
       if (response != undefined) {
         exec_response = response.replace(/(\r\n|\n|\r)/gm, "");
       }

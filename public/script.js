@@ -47,15 +47,18 @@ var app = new Vue({
 
         },
         loadData: function () {
-            fetch('/api/power').then(response => response.json())
-                .then((data) => this.powerState = data.power);
+            //fetch('/api/power').then(response => response.json())
+            //    .then((data) => this.powerState = data.power);
+            // Arusaamatul põhjusel kui teha mitu päringut või kui neid teha isegi vahedega, 
+            // siis Denon hakkab vigu andma. Kui teha päringuid mitmest brauseri aknast, 
+            // siis peab üsna hästi vastu (ca 500ms tagant päringuid suudab vastata)
 
-            if (this.powerState) {
-                this.stateLoading = false
+            //if (this.powerState) {
+            //   this.stateLoading = false
 
-                fetch('/api/volume').then(response => response.json())
-                    .then((data) => this.currentVolume = data.volume);
-            }
+            fetch('/api/volume').then(response => response.json())
+                .then((data) => this.currentVolume = data.volume);
+            //}
         }
     },
     mounted: function () {
