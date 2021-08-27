@@ -9,6 +9,7 @@ var config = require('./config');
 var moment = require('./moment');
 
 var app = express();
+var denonConnectionAvailable = true;
 
 var params = {
   host: config.telnet_host,
@@ -43,7 +44,7 @@ app.get('/api/volume', function (req, res) {
 app.get('/api/volume/:level', function (req, res) {
   vol = req.params.level;
   vol_str = "";
-  if (vol > -1 & vol < 5) { //TODO: volume limit 5
+  if (vol > -1 & vol < 11) { //TODO: volume limit 5
     if (vol < 10) {
       vol_str = "MV0" + vol;
     } else {
@@ -154,14 +155,14 @@ app.listen(config.webserver_port, function () {
   console.log('Denon remote app started!')
 });
 
+
+
 var execute = function (cmd, callback) {
   var connection = new telnet();
-  var requestID = Date.now().toString().substr(7, 7)
+  var requestID = Math.floor(Math.random() * 10000);
   var exec_response = ""
   var exec_error = ""
-  var responseOK = true
-  //TODO add error log levels (debug/live)
-  
+
   connection.on('connect', function () {
     connection.exec(cmd, function (err, response) {
       if (response != undefined) {
@@ -170,30 +171,55 @@ var execute = function (cmd, callback) {
       if (err != undefined) {
         exec_error = err;
       }
-      console.log("TELNET RequestID: " + requestID + " - Command: " + cmd + " Response: " + exec_response + " Error: " + exec_error);
+      console.log(requestID + " Telnet response: " + exec_response + " Error: " + exec_error);
       connection.end();
     });
   });
 
   connection.on('timeout', function () {
-    console.log("TELNET RequestID: " + requestID + " - Socket timeout, closing connection")
+    console.log(requestID + " Socket timeout, closing connection")
     connection.end();
   });
 
   connection.on('close', function () {
-    console.log("TELNET RequestID: " + requestID + " - Connection closed, responseOK=" + responseOK);
-    denonConnectionAvailable = true;
+    console.log(requestID + " Telnet connection closed");
+    
+    setTimeout(function() { //we need cooldown period before next connection
+      denonConnectionAvailable = true;
+    }, 100);
+
     callback(exec_response, exec_error);
   });
 
   connection.on('error', function (err) {
-    console.log("TELNET RequestID: " + requestID + " - Something bad happened");
+    console.log(requestID + " Telnet error");
     console.log(err);
-    responseOK = false;
+    connection.end();
     //execute(cmd, callback);
   });
 
-  connection.connect(params);
+  console.log(requestID + " New command requested: " + cmd);
+  waitConnection(100, 0, requestID, function() {
+    console.log(requestID + " Telnet ready to connect...");
+    denonConnectionAvailable = false;
+    connection.connect(params);
+  });
+}
+
+//https://stackoverflow.com/questions/7193238/wait-until-a-condition-is-true
+
+
+function waitConnection(msec, count, rid, callback) {
+  // Check if condition met. If not, re-check later (msec).
+  while (!denonConnectionAvailable) {
+      console.log(rid + " Telnet connection busy... waiting "+ msec +"ms")
+      count++;
+      setTimeout(function() {
+        waitConnection(msec, count, rid, callback);
+      }, msec);
+      return;
+  }
+  callback();
 }
 
 function parseAlarmResponse(response) {

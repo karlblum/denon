@@ -18,9 +18,9 @@
                     <template v-if="powerState">Turn OFF</template>
                     <template v-else>Turn ON</template>
                 </v-btn>
-                <v-slider :value="currentVolume" :disabled="!powerState" append-icon="volume_up"
-                    prepend-icon="volume_down" min="0" :max="volMax" @click:append="setVolume(parseInt(currentVolume)+1)"
-                    @click:prepend="setVolume(parseInt(currentVolume)-1)" mouseup="setVolume(currentVolume)" class="ma-5">
+                <v-slider v-model="volume" :disabled="!powerState" append-icon="volume_up"
+                    prepend-icon="volume_down" min="0" :max="volMax" @click:append="setVolume(volume++)"
+                    @click:prepend="setVolume(volume--)" @change="setVolume(volume)" class="ma-5">
                 </v-slider>
                 <v-row>
                     <v-col v-for="c in channels">

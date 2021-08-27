@@ -15,8 +15,8 @@ var app = new Vue({
         ],
         powerState: false,
         stateLoading: false,
-        currentVolume: 4,
-        volMax: 5
+        volume: null,
+        volMax: 10
     },
     methods: {
         //https://learnwithparam.com/blog/how-to-handle-fetch-errors/
@@ -27,16 +27,16 @@ var app = new Vue({
         },
         togglePower: function () {
             if (this.powerState) {
-                console.log('Power OFF')
+                console.log('Turn off')
                 fetch('/api/power/off')
             } else {
-                console.log('Power ON')
+                console.log('Turn on')
                 fetch('/api/power/on')
                 this.stateLoading = true
             }
         },
         setVolume: function (value) {
-            console.log("Trying to set volume: " + value)
+            console.log("Set volume: " + value)
             if (value > this.volMax) {
                 value = this.volMax
             } else if (value < 0) {
@@ -47,25 +47,23 @@ var app = new Vue({
 
         },
         loadData: function () {
-            //fetch('/api/power').then(response => response.json())
-            //    .then((data) => this.powerState = data.power);
-            // Arusaamatul põhjusel kui teha mitu päringut või kui neid teha isegi vahedega, 
-            // siis Denon hakkab vigu andma. Kui teha päringuid mitmest brauseri aknast, 
-            // siis peab üsna hästi vastu (ca 500ms tagant päringuid suudab vastata)
+            fetch('/api/power').then(response => response.json())
+                .then((data) => this.powerState = data.power);
+            
+            if (this.powerState) {
+               this.stateLoading = false
+               fetch('/api/volume').then(response => response.json())
+                    .then((data) => this.currentVolume = data.volume);
+            }
 
-            //if (this.powerState) {
-            //   this.stateLoading = false
-
-            fetch('/api/volume').then(response => response.json())
-                .then((data) => this.currentVolume = data.volume);
-            //}
+            
         }
     },
     mounted: function () {
         this.loadData();
         setInterval(function () {
             this.loadData();
-        }.bind(this), 4000);
+        }.bind(this), 2000);
     },
     vuetify: new Vuetify()
 })
