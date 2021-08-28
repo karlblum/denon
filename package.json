@@ -23,6 +23,9 @@
     "express": "^4.17.1",
     "express-queue": "^0.0.12",
     "telnet-client": "^1.2.11",
-    "use-strict": "^1.0.1"
+    "use-strict": "^1.0.1",
+    "axios":"^0.21.1",
+    "xml":"^1.0.1",
+    "xml2js": "^0.4.23"
   }
 }

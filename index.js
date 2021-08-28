@@ -4,9 +4,12 @@ require('use-strict');
 
 var telnet = require('telnet-client');
 var express = require('express');
+var axios = require('axios')
 var path = require("path");
+var xml = require('xml');
 var config = require('./config');
 var moment = require('./moment');
+var parseString = require('xml2js').parseString;
 
 var app = express();
 var denonConnectionAvailable = true;
@@ -58,28 +61,57 @@ app.get('/api/volume/:level', function (req, res) {
   }
 });
 
+app.get('/api/status', function (req, res) {
 
-app.get('/api/power/on', function (req, res) {
-  execute("PWON", function (response, error) {
-    if (error != undefined & error != "") {
-      res.status(500).send(error)
-    } else {
-      res.json({
-        power: true
+  var xmlBody = `
+  <?xml version="1.0" encoding="utf-8"?>
+  <tx>
+   <cmd id="1">GetAllZonePowerStatus</cmd>
+   <cmd id="1">GetVolumeLevel</cmd>
+   <cmd id="1">GetNetAudioStatus</cmd>
+  </tx>`;
+
+  var config = {
+    headers: { 'Content-Type': 'text/xml' }
+  };
+
+  axios.post('http://192.168.1.168/goform/AppCommand.xml', xmlBody, config)
+    .then(response => {
+      parseString(response.data, function (err, result) {
+        res.json({
+          power: result.rx.cmd[0].zone1[0],
+          volume: result.rx.cmd[1].dispvalue[0],
+          track: result.rx.cmd[2].text[4]._,
+          artist: result.rx.cmd[2].text[5]._,
+        });
       });
-    }
-  })
+
+    })
+    .catch(error => {
+      console.error(error)
+      res.status(500).send(error);
+    })
 });
 
 app.get('/api/power/off', function (req, res) {
-  execute("PWSTANDBY", function (response, error) {
-    if (error != undefined & error != "") {
-      res.status(500).send(error)
-    } else {
-      res.json({
-        power: false
-      });
-    }
+  axios.get('http://192.168.1.168/goform/formiPhoneAppPower.xml?1+PowerStandby').then(response => {
+    res.json({
+      power: false
+    })
+  }).catch(error => {
+    console.error(error);
+    res.status(500).send(error);
+  })
+});
+
+app.get('/api/power/on', function (req, res) {
+  axios.get('http://192.168.1.168/goform/formiPhoneAppPower.xml?1+PowerOn').then(response => {
+    res.json({
+      power: true
+    })
+  }).catch(error => {
+    console.error(error);
+    res.status(500).send(error);
   })
 });
 
@@ -97,18 +129,6 @@ app.get('/api/favourite/:nr', function (req, res) {
     } else {
       res.json({
         favourite: response
-      });
-    }
-  })
-});
-
-app.get('/api/favourite/list', function (req, res) {
-  execute("FV ?", function (response, error) {
-    if (error != undefined & error != "") {
-      res.status(500).send(error)
-    } else {
-      res.json({
-        favourites: response
       });
     }
   })
@@ -183,8 +203,8 @@ var execute = function (cmd, callback) {
 
   connection.on('close', function () {
     console.log(requestID + " Telnet connection closed");
-    
-    setTimeout(function() { //we need cooldown period before next connection
+
+    setTimeout(function () { //we need cooldown period before next connection
       denonConnectionAvailable = true;
     }, 100);
 
@@ -199,7 +219,7 @@ var execute = function (cmd, callback) {
   });
 
   console.log(requestID + " New command requested: " + cmd);
-  waitConnection(100, 0, requestID, function() {
+  waitConnection(100, 0, requestID, function () {
     console.log(requestID + " Telnet ready to connect...");
     denonConnectionAvailable = false;
     connection.connect(params);
@@ -212,12 +232,12 @@ var execute = function (cmd, callback) {
 function waitConnection(msec, count, rid, callback) {
   // Check if condition met. If not, re-check later (msec).
   while (!denonConnectionAvailable) {
-      console.log(rid + " Telnet connection busy... waiting "+ msec +"ms")
-      count++;
-      setTimeout(function() {
-        waitConnection(msec, count, rid, callback);
-      }, msec);
-      return;
+    console.log(rid + " Telnet connection busy... waiting " + msec + "ms")
+    count++;
+    setTimeout(function () {
+      waitConnection(msec, count, rid, callback);
+    }, msec);
+    return;
   }
   callback();
 }
