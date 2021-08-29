@@ -1,9 +1,7 @@
 var config = {};
 
-config.telnet_host = '192.168.1.168';
-config.telnet_port = 23;
-config.telnet_timeout = 3000;
-config.telnet_requestTimeout = 300;
+config.denon_host = '192.168.1.168';
+config.denon_api = 'http://' + config.denon_host + '/goform/';
 config.webserver_port = 80;
 
 module.exports = config;
