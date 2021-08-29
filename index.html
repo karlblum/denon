@@ -12,15 +12,25 @@
     <div id="app">
         <v-app>
             <v-container fluid style="max-width: 440px;">
-                <v-btn :loading="stateLoading" color="primary" width="130" class="ma-2 white--text"
-                    @click="togglePower()">
-                    <v-icon left>power_settings_new</v-icon>
-                    <template v-if="powerState">Turn OFF</template>
-                    <template v-else>Turn ON</template>
-                </v-btn>
-                <v-slider v-model="volume" :disabled="!powerState" append-icon="volume_up"
-                    prepend-icon="volume_down" min="0" :max="volMax" @click:append="setVolume(volume++)"
-                    @click:prepend="setVolume(volume--)" @change="setVolume(volume)" class="ma-5">
+                <v-alert color="blue" dark outlined>
+                    <v-row>
+                        <v-col>
+                            <p v-if="powerState == 'ON'">{{artist}}<br>{{track}}</p>
+                            <p v-else>Denon turned off</p>
+                            <v-progress-linear v-if="powerState == 'ON'" color="blue lighten-2" buffer-value="0" stream>
+                            </v-progress-linear>
+                        </v-col>
+                        <v-col class="col-auto">
+                            <v-btn :loading="stateLoading" color="primary" icon large class="mb-2" elevation="2"
+                                @click="togglePower()">
+                                <v-icon>power_settings_new</v-icon>
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-alert>
+                <v-slider v-model="volume" :disabled="powerState != 'ON'" append-icon="volume_up"
+                    prepend-icon="volume_down" min="0" :max="volMax" @click:append="setVolume(volume+1)"
+                    @click:prepend="setVolume(volume-1)" @change="setVolume(volume)" class="ma-5">
                 </v-slider>
                 <v-row>
                     <v-col v-for="c in channels">

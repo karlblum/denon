@@ -13,57 +13,54 @@ var app = new Vue({
             { "name": "BBC Radio 2", "channelNumber": "11", "image": "BBC_Radio_2.svg" },
             { "name": "Vikerraadio", "channelNumber": "8", "image": "vikerraadio.png" }
         ],
-        powerState: false,
+        powerState: "STANDBY",
         stateLoading: false,
-        volume: null,
+        artist: "LOADING...",
+        track: "",
+        volume: 0,
         volMax: 10
     },
     methods: {
         //https://learnwithparam.com/blog/how-to-handle-fetch-errors/
         //fetch vajab täiendamist
         changeChannel: function (channelNumber) {
-            fetch('/api/favourite/' + channelNumber)
-            console.log('Channel changed to: ' + channelNumber);
+            fetch('/api/favourite/' + channelNumber);
         },
         togglePower: function () {
-            if (this.powerState) {
-                console.log('Turn off')
-                fetch('/api/power/off')
+            if (this.powerState == "ON") {
+                fetch('/api/power/off');
             } else {
-                console.log('Turn on')
-                fetch('/api/power/on')
-                this.stateLoading = true
+                fetch('/api/power/on');
+                this.stateLoading = true;
             }
         },
         setVolume: function (value) {
-            console.log("Set volume: " + value)
             if (value > this.volMax) {
-                value = this.volMax
+                value = this.volMax;
             } else if (value < 0) {
-                value = 0
+                value = 0;
             }
-            fetch('/api/volume/' + value).then(response => response.json())
-                .then((data) => this.currentVolume = data.volume);
+            this.volume = value;
+            fetch('/api/volume/' + value);
 
         },
         loadData: function () {
-            fetch('/api/power').then(response => response.json())
-                .then((data) => this.powerState = data.power);
-            
-            if (this.powerState) {
-               this.stateLoading = false
-               fetch('/api/volume').then(response => response.json())
-                    .then((data) => this.currentVolume = data.volume);
-            }
-
-            
+            fetch('/api/status').then(response => response.json()).then(data => {
+                if (data.power == "ON") {
+                    this.stateLoading = false;
+                }
+                this.powerState = data.power;
+                this.volume = data.volume;
+                this.artist = data.artist
+                this.track = data.track;
+            });
         }
     },
     mounted: function () {
         this.loadData();
         setInterval(function () {
             this.loadData();
-        }.bind(this), 2000);
+        }.bind(this), 1000);
     },
     vuetify: new Vuetify()
 })
